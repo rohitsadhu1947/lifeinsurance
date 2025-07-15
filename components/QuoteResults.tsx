@@ -18,7 +18,7 @@ import {
   Users,
 } from "lucide-react"
 
-export default function QuoteResults() {
+export default function ProfessionalQuoteResults() {
   const [quotes, setQuotes] = useState([])
   const [summary, setSummary] = useState(null)
   const [loading, setLoading] = useState(true)
