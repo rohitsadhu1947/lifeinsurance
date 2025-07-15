@@ -14,7 +14,9 @@ import {
   Lock,
   Clock,
   Phone,
+  Calculator,
 } from "lucide-react"
+import { PremiumCalculator } from "./AdvancedFeatures"
 
 export default function ProfessionalInsuranceQuoteForm() {
   const [currentStep, setCurrentStep] = useState(1)
@@ -33,6 +35,7 @@ export default function ProfessionalInsuranceQuoteForm() {
   const [estimatedPremium, setEstimatedPremium] = useState(null)
   const [riskProfile, setRiskProfile] = useState("")
   const [showCoverHelp, setShowCoverHelp] = useState(false)
+  const [showPremiumCalculator, setShowPremiumCalculator] = useState(false)
 
   const coverOptions = [
     { value: "5000000", label: "₹50 Lakhs", popular: false, saving: "₹8,500" },
@@ -350,6 +353,16 @@ export default function ProfessionalInsuranceQuoteForm() {
                           </button>
                         ))}
                       </div>
+                    </div>
+                    <div className="mt-4 text-center">
+                      <button
+                        type="button"
+                        onClick={() => setShowPremiumCalculator(true)}
+                        className="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center space-x-2 mx-auto"
+                      >
+                        <Calculator className="h-4 w-4" />
+                        <span>Use Premium Calculator</span>
+                      </button>
                     </div>
 
                     {/* Date of Birth with Smart Features */}
@@ -748,6 +761,8 @@ export default function ProfessionalInsuranceQuoteForm() {
             </div>
           </div>
         )}
+        {/* Premium Calculator Modal */}
+        <PremiumCalculator isOpen={showPremiumCalculator} onClose={() => setShowPremiumCalculator(false)} />
       </div>
     </div>
   )

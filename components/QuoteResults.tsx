@@ -16,7 +16,9 @@ import {
   Info,
   Award,
   Users,
+  Upload,
 } from "lucide-react"
+import { PlanDetailsModal, AdvancedFilter, DocumentUploader } from "./AdvancedFeatures"
 
 export default function ProfessionalQuoteResults() {
   const [quotes, setQuotes] = useState([])
@@ -35,6 +37,10 @@ export default function ProfessionalQuoteResults() {
     policyTerm: "all",
     paymentFrequency: "all",
   })
+
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
+  const [showDocumentUploader, setShowDocumentUploader] = useState(false)
+  const [advancedFilters, setAdvancedFilters] = useState({})
 
   useEffect(() => {
     // Get real data from URL params or localStorage
@@ -316,11 +322,11 @@ export default function ProfessionalQuoteResults() {
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
             <div className="flex flex-wrap items-center gap-4">
               <button
-                onClick={() => setShowFilters(!showFilters)}
+                onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
                 className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:border-gray-400 transition-colors"
               >
                 <Filter className="h-4 w-4" />
-                <span>Filters</span>
+                <span>Advanced Filters</span>
               </button>
 
               <div className="flex items-center space-x-2">
@@ -419,6 +425,20 @@ export default function ProfessionalQuoteResults() {
                   </select>
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* Advanced Filter Panel */}
+          {showAdvancedFilters && (
+            <div className="mt-6 pt-6 border-t border-gray-200">
+              <AdvancedFilter
+                filters={advancedFilters}
+                onFiltersChange={(newFilters) => {
+                  setAdvancedFilters(newFilters)
+                  // Apply filters to quotes here
+                }}
+                onClose={() => setShowAdvancedFilters(false)}
+              />
             </div>
           )}
         </div>
@@ -543,7 +563,7 @@ export default function ProfessionalQuoteResults() {
                       className="flex items-center justify-center space-x-1 border border-gray-300 hover:border-blue-400 hover:text-blue-600 text-gray-700 font-medium py-2 px-2 rounded-lg text-sm transition-colors"
                     >
                       <Info className="h-4 w-4" />
-                      <span>Details</span>
+                      <span>Full Details</span>
                     </button>
 
                     <button
@@ -609,6 +629,13 @@ export default function ProfessionalQuoteResults() {
                 <Mail className="h-4 w-4" />
                 <span>Email Quotes</span>
               </button>
+              <button
+                onClick={() => setShowDocumentUploader(true)}
+                className="flex items-center justify-center space-x-2 border border-gray-300 hover:border-gray-400 text-gray-700 px-6 py-3 rounded-lg font-medium transition-colors"
+              >
+                <Upload className="h-4 w-4" />
+                <span>Upload Documents</span>
+              </button>
             </div>
           </div>
         </div>
@@ -633,86 +660,10 @@ export default function ProfessionalQuoteResults() {
       </div>
 
       {/* Plan Details Modal */}
-      {showPlanDetails && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-xl font-semibold text-gray-900">{showPlanDetails.planName}</h3>
-                  <p className="text-gray-600">{showPlanDetails.companyName}</p>
-                </div>
-                <button onClick={() => setShowPlanDetails(null)} className="text-gray-400 hover:text-gray-600">
-                  ×
-                </button>
-              </div>
-            </div>
+      <PlanDetailsModal plan={showPlanDetails} isOpen={!!showPlanDetails} onClose={() => setShowPlanDetails(null)} />
 
-            <div className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h4 className="font-semibold text-gray-900 mb-3">Plan Details</h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Premium:</span>
-                      <span className="font-medium">{formatCurrency(showPlanDetails.premium)}/year</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Policy Term:</span>
-                      <span className="font-medium">{showPlanDetails.policyTerm} years</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Payment Term:</span>
-                      <span className="font-medium">{showPlanDetails.paymentTerm} years</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Claim Settlement:</span>
-                      <span className="font-medium text-green-600">{showPlanDetails.claimSettlementRatio || 98}%</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h4 className="font-semibold text-gray-900 mb-3">Key Benefits</h4>
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-2">
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                      <span className="text-sm text-gray-700">Death Benefit Coverage</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                      <span className="text-sm text-gray-700">Terminal Illness Benefit</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                      <span className="text-sm text-gray-700">Tax Benefits u/s 80C & 10(10D)</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                      <span className="text-sm text-gray-700">Flexible Premium Payment</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6 pt-6 border-t border-gray-200">
-                <div className="flex space-x-3">
-                  <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors">
-                    Buy This Plan
-                  </button>
-                  <button
-                    onClick={() => window.open(showPlanDetails.brochure || "#", "_blank")}
-                    className="flex items-center space-x-2 border border-gray-300 hover:border-gray-400 text-gray-700 px-4 py-3 rounded-lg transition-colors"
-                  >
-                    <Download className="h-4 w-4" />
-                    <span>Download Brochure</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Document Uploader Modal */}
+      <DocumentUploader isOpen={showDocumentUploader} onClose={() => setShowDocumentUploader(false)} />
     </div>
   )
 }

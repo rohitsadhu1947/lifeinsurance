@@ -20,6 +20,7 @@ import {
   ThumbsUp,
   ThumbsDown,
 } from "lucide-react"
+import { PlanDetailsModal } from "./AdvancedFeatures"
 
 export default function ProfessionalQuoteComparison() {
   const [quotes, setQuotes] = useState([])
@@ -28,6 +29,7 @@ export default function ProfessionalQuoteComparison() {
   const [selectedFeature, setSelectedFeature] = useState(null)
   const [showAllFeatures, setShowAllFeatures] = useState(false)
   const [highlightDifferences, setHighlightDifferences] = useState(true)
+  const [showPlanDetailsModal, setShowPlanDetailsModal] = useState(null)
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search)
@@ -542,9 +544,17 @@ export default function ProfessionalQuoteComparison() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {quotes.map((quote) => (
                 <div key={quote.id} className="text-center">
-                  <button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 px-6 rounded-xl text-lg transition-all duration-200 transform hover:scale-105 shadow-lg">
-                    Buy {quote.insurerLogo} Plan
-                  </button>
+                  <div className="mt-4 space-y-2">
+                    <button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 px-6 rounded-xl text-lg transition-all duration-200 transform hover:scale-105 shadow-lg">
+                      Buy {quote.insurerLogo} Plan
+                    </button>
+                    <button
+                      onClick={() => setShowPlanDetailsModal(quote)}
+                      className="w-full border border-gray-300 hover:border-gray-400 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors"
+                    >
+                      View Full Details
+                    </button>
+                  </div>
                   <p className="text-sm text-gray-600 mt-2">{formatCurrency(quote.premium)}/year</p>
                 </div>
               ))}
@@ -827,6 +837,12 @@ export default function ProfessionalQuoteComparison() {
           </div>
         </div>
       )}
+      {/* Plan Details Modal */}
+      <PlanDetailsModal
+        plan={showPlanDetailsModal}
+        isOpen={!!showPlanDetailsModal}
+        onClose={() => setShowPlanDetailsModal(null)}
+      />
     </div>
   )
 }
