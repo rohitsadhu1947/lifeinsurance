@@ -77,7 +77,9 @@ export default function IntegrationGuide() {
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">🚀 Advanced Features Integration Complete!</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              🚀 ICE by Ensuredit - Advanced Features Integration Complete!
+            </h1>
             <p className="text-lg text-gray-600">Your insurance platform now includes professional-grade features</p>
           </div>
         </div>

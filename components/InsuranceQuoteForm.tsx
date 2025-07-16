@@ -173,7 +173,7 @@ export default function ProfessionalInsuranceQuoteForm() {
                 <Shield className="h-8 w-8 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">InsureCompare</h1>
+                <h1 className="text-2xl font-bold text-gray-900">ICE by Ensuredit</h1>
                 <p className="text-sm text-gray-600">India's Trusted Insurance Platform</p>
               </div>
             </div>
@@ -591,7 +591,7 @@ export default function ProfessionalInsuranceQuoteForm() {
             <div className="space-y-6">
               {/* Benefits Card */}
               <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Why Choose InsureCompare?</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Why Choose ICE by Ensuredit?</h3>
                 <div className="space-y-4">
                   {[
                     { icon: Shield, title: "100% Free Service", desc: "No hidden charges or commission" },

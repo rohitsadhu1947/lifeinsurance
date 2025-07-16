@@ -221,7 +221,7 @@ export default function ProfessionalQuoteResults() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <Shield className="h-8 w-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-gray-900">InsureCompare</h1>
+              <h1 className="text-2xl font-bold text-gray-900">ICE by Ensuredit</h1>
             </div>
             <div className="flex items-center space-x-4">
               <div className="hidden sm:flex items-center space-x-2 bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">

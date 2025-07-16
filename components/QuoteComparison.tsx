@@ -212,7 +212,7 @@ export default function ProfessionalQuoteComparison() {
                 <Shield className="h-8 w-8 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">InsureCompare</h1>
+                <h1 className="text-2xl font-bold text-gray-900">ICE by Ensuredit</h1>
                 <p className="text-sm text-gray-600">Professional Plan Comparison</p>
               </div>
             </div>
