@@ -377,6 +377,27 @@ export async function POST(request) {
 
     console.log("🎉 === QUOTE GENERATION SUCCESS ===")
 
+    // Store quotes in database for session-based retrieval (only if DATABASE_URL is available)
+    if (process.env.DATABASE_URL) {
+      try {
+        const { sql } = await import("@/lib/db")
+        await sql`
+          INSERT INTO quotes_storage (session_id, quote_data)
+          VALUES (${result.sessionId}, ${JSON.stringify(result)})
+          ON CONFLICT (session_id) 
+          DO UPDATE SET 
+            quote_data = ${JSON.stringify(result)},
+            expires_at = CURRENT_TIMESTAMP + INTERVAL '24 hours'
+        `
+        console.log("💾 Quotes stored in database for session:", result.sessionId)
+      } catch (dbError) {
+        console.error("⚠️ Failed to store quotes in database:", dbError)
+        // Don't fail the request if database storage fails
+      }
+    } else {
+      console.log("⚠️ No DATABASE_URL, skipping database storage")
+    }
+
     return NextResponse.json({
       success: true,
       sessionId: result.sessionId,

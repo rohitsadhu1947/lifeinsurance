@@ -43,39 +43,56 @@ export default function ProfessionalQuoteResults() {
   const [advancedFilters, setAdvancedFilters] = useState({})
 
   useEffect(() => {
-    // Get real data from URL params or localStorage
-    const urlParams = new URLSearchParams(window.location.search)
-    const session = urlParams.get("session")
-    setSessionId(session)
+    const loadQuoteData = async () => {
+      // Get real data from URL params or localStorage
+      const urlParams = new URLSearchParams(window.location.search)
+      const session = urlParams.get("session")
+      setSessionId(session)
 
-    // Try to get data from localStorage (set by form submission)
-    const storedQuoteData = localStorage.getItem("latestQuoteResults")
+      // Try to get data from localStorage first
+      const storedQuoteData = localStorage.getItem("latestQuoteResults")
 
-    if (storedQuoteData) {
-      try {
-        const quoteData = JSON.parse(storedQuoteData)
-        console.log("📊 Loading real quote data:", quoteData)
+      if (storedQuoteData) {
+        try {
+          const quoteData = JSON.parse(storedQuoteData)
+          console.log("📊 Loading real quote data from localStorage:", quoteData)
 
-        setQuotes(quoteData.quotes || [])
-        setSummary(quoteData.summary || null)
-        setLoading(false)
-
-        // Clear stored data after use
-        localStorage.removeItem("latestQuoteResults")
-      } catch (error) {
-        console.error("Error parsing stored quote data:", error)
-        setError("Failed to load quote results")
-        setLoading(false)
+          setQuotes(quoteData.quotes || [])
+          setSummary(quoteData.summary || null)
+          setLoading(false)
+          return // Successfully loaded from localStorage
+        } catch (error) {
+          console.error("Error parsing stored quote data:", error)
+          // Fall through to session fetch
+        }
       }
-    } else {
+
       // Fallback: Try to fetch from session if available
       if (session) {
-        console.log("No stored data, session:", session)
+        console.log("No stored data, fetching from session:", session)
+        try {
+          const response = await fetch(`/api/quotes/session?sessionId=${session}`)
+          if (response.ok) {
+            const sessionData = await response.json()
+            console.log("📊 Loading quote data from session:", sessionData)
+            
+            setQuotes(sessionData.quotes || [])
+            setSummary(sessionData.summary || null)
+            setLoading(false)
+            return // Successfully loaded from session
+          }
+        } catch (error) {
+          console.error("Error fetching session data:", error)
+        }
       }
 
+      // If we reach here, no data was found
+      console.error("❌ No quote data found from any source")
       setError("No quote data found. Please generate quotes again.")
       setLoading(false)
     }
+
+    loadQuoteData()
   }, [])
 
   const handleQuoteSelection = (quoteId) => {
@@ -87,6 +104,60 @@ export default function ProfessionalQuoteResults() {
   const handleCompare = () => {
     if (selectedQuotes.length >= 2) {
       window.location.href = `/compare?quotes=${selectedQuotes.join(",")}&session=${sessionId}`
+    }
+  }
+
+  const handleGetFreshQuotes = () => {
+    // Clear any stored data and redirect to home page
+    localStorage.removeItem("latestQuoteResults")
+    window.location.href = "/"
+  }
+
+  const handleBuyPlan = (quote) => {
+    console.log("🛒 Buy Plan clicked with quote:", quote)
+    console.log("📊 Summary data:", summary)
+    console.log("📊 Quotes array:", quotes)
+    
+    if (!quote || !quote.id) {
+      console.error("Invalid quote object:", quote)
+      alert("Error: Invalid quote data. Please refresh the page and try again.")
+      return
+    }
+
+    if (!summary || !summary.coverAmount) {
+      console.error("Missing summary data:", summary)
+      alert("Error: Missing quote summary. Please refresh the page and try again.")
+      return
+    }
+
+    try {
+      // Store quote data in localStorage for the proposal page
+      const quoteData = {
+        id: quote.id,
+        planName: quote.planName || "Unknown Plan",
+        companyName: quote.companyName || "Unknown Company",
+        companyLogo: quote.companyLogo || "INS",
+        premium: quote.premium || 0,
+        coverageAmount: summary.coverAmount,
+        dob: summary.dob, // Include DOB from summary
+        sessionId: sessionId
+      }
+      localStorage.setItem("quote-data", JSON.stringify(quoteData))
+      
+      const params = new URLSearchParams({
+        quoteId: quote.id.toString(),
+        planName: quote.planName || "Unknown Plan",
+        companyName: quote.companyName || "Unknown Company",
+        companyLogo: quote.companyLogo || "INS",
+        premium: (quote.premium || 0).toString(),
+        coverageAmount: summary.coverAmount.toString(),
+      })
+      
+      console.log("🔗 Navigating to proposal with params:", params.toString())
+      window.location.href = `/proposal?${params.toString()}`
+    } catch (error) {
+      console.error("Error creating proposal URL:", error)
+      alert("Error: Failed to create proposal link. Please try again.")
     }
   }
 
@@ -183,7 +254,7 @@ export default function ProfessionalQuoteResults() {
           <h2 className="text-xl font-semibold text-gray-900 mb-2">{error}</h2>
           <p className="text-gray-600 mb-6">Don't worry, let's get you the best quotes in just 30 seconds!</p>
           <button
-            onClick={() => (window.location.href = "/")}
+            onClick={handleGetFreshQuotes}
             className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium"
           >
             Get Fresh Quotes
@@ -201,7 +272,7 @@ export default function ProfessionalQuoteResults() {
           <h2 className="text-xl font-semibold text-gray-900 mb-2">No Quotes Available</h2>
           <p className="text-gray-600 mb-4">We couldn't find any quotes for your criteria.</p>
           <button
-            onClick={() => (window.location.href = "/")}
+            onClick={handleGetFreshQuotes}
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg"
           >
             Try Different Criteria
@@ -553,8 +624,16 @@ export default function ProfessionalQuoteResults() {
               {/* Action Buttons */}
               <div className="px-6 pb-6">
                 <div className="space-y-3">
-                  <button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-105">
-                    Buy This Plan
+                  <button 
+                    onClick={() => handleBuyPlan(quote)}
+                    disabled={!quote || !quote.id || !summary || !summary.coverAmount}
+                    className={`w-full font-semibold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-105 ${
+                      !quote || !quote.id || !summary || !summary.coverAmount
+                        ? "bg-gray-400 text-gray-200 cursor-not-allowed"
+                        : "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white"
+                    }`}
+                  >
+                    {!quote || !quote.id || !summary || !summary.coverAmount ? "Loading..." : "Buy This Plan"}
                   </button>
 
                   <div className="grid grid-cols-3 gap-2">

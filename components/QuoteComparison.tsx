@@ -157,6 +157,22 @@ export default function ProfessionalQuoteComparison() {
     }).format(amount)
   }
 
+  const handleBuyPlan = (quote) => {
+    if (!quote || !quote.id) {
+      console.error("Invalid quote object:", quote)
+      return
+    }
+
+    const params = new URLSearchParams({
+      quoteId: quote.id.toString(),
+      planName: quote.planName || "Unknown Plan",
+      companyName: quote.companyName || "Unknown Company",
+      premium: (quote.premium || 0).toString(),
+      coverageAmount: (comparison?.summary?.coverAmount || 0).toString(),
+    })
+    window.location.href = `/proposal?${params.toString()}`
+  }
+
   const handleShare = (type) => {
     const shareUrl = window.location.href
     const shareText = `Compare insurance plans - Save up to ${formatCurrency(comparison?.summary.maxSavings)}/year!`
@@ -545,7 +561,10 @@ export default function ProfessionalQuoteComparison() {
               {quotes.map((quote) => (
                 <div key={quote.id} className="text-center">
                   <div className="mt-4 space-y-2">
-                    <button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 px-6 rounded-xl text-lg transition-all duration-200 transform hover:scale-105 shadow-lg">
+                    <button 
+                      onClick={() => handleBuyPlan(quote)}
+                      className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 px-6 rounded-xl text-lg transition-all duration-200 transform hover:scale-105 shadow-lg"
+                    >
                       Buy {quote.insurerLogo} Plan
                     </button>
                     <button
