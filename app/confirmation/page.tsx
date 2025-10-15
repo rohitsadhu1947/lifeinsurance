@@ -10,10 +10,12 @@ function ConfirmationContent() {
   const proposalId = searchParams.get("proposalId")
   const [isPaymentOpen, setIsPaymentOpen] = useState(false)
 
-  // Get quote data from localStorage for dynamic insurer name
+  // Get quote data from localStorage for dynamic insurer name and premium
   const quoteData = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem("quote-data") || "{}") : {}
   const insurerName = quoteData.companyName || "Insurance Company"
   const companyLogo = quoteData.companyLogo || "INS"
+  const premium = quoteData.premium || 0
+  const coverageAmount = quoteData.coverageAmount || 1000000
 
   const handleMakePayment = () => {
     setIsPaymentOpen(true)
@@ -98,7 +100,7 @@ function ConfirmationContent() {
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Cover:</span>
-                      <span className="font-medium">₹10,00,000</span>
+                      <span className="font-medium">₹{coverageAmount.toLocaleString('en-IN')}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Pay Frequency:</span>
@@ -121,11 +123,11 @@ function ConfirmationContent() {
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Basic Premium:</span>
-                      <span className="font-medium">₹18,291</span>
+                      <span className="font-medium">₹{premium.toLocaleString('en-IN')}</span>
                     </div>
                     <div className="flex justify-between border-t border-gray-200 pt-2">
                       <span className="text-gray-900 font-semibold">Payable Amount:</span>
-                      <span className="font-semibold text-green-600">₹18,291</span>
+                      <span className="font-semibold text-green-600">₹{premium.toLocaleString('en-IN')}</span>
                     </div>
                   </div>
                 </div>
@@ -139,7 +141,7 @@ function ConfirmationContent() {
       <PaymentGateway
         isOpen={isPaymentOpen}
         onClose={() => setIsPaymentOpen(false)}
-        amount={18291}
+        amount={premium}
         insurerName={insurerName}
       />
     </div>

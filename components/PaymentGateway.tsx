@@ -259,7 +259,7 @@ export default function PaymentGateway({ isOpen, onClose, amount, insurerName }:
         {/* Footer */}
         <div className="border-t bg-gray-50 p-4 flex items-center justify-between">
           <div>
-            <div className="font-bold text-lg">₹ {amount.toLocaleString()}</div>
+            <div className="font-bold text-lg">₹ {amount.toLocaleString('en-IN')}</div>
             <div className="text-sm text-gray-600">View Details</div>
           </div>
           <button

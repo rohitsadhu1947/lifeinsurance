@@ -97,12 +97,12 @@ export function PlanDetailsModal({ plan, isOpen, onClose }) {
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Premium Breakdown</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-blue-600">₹{plan.premium?.toLocaleString()}</div>
+                    <div className="text-2xl font-bold text-blue-600">₹{plan.premium?.toLocaleString('en-IN')}</div>
                     <div className="text-sm text-gray-600">Annual Premium</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-green-600">
-                      ₹{Math.round(plan.premium / 12)?.toLocaleString()}
+                      ₹{Math.round(plan.premium / 12)?.toLocaleString('en-IN')}
                     </div>
                     <div className="text-sm text-gray-600">Monthly Premium</div>
                   </div>
@@ -689,15 +689,15 @@ export function PremiumCalculator({ isOpen, onClose }) {
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Premium Estimate</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-green-600">₹{result.annual?.toLocaleString()}</div>
+                  <div className="text-2xl font-bold text-green-600">₹{result.annual?.toLocaleString('en-IN')}</div>
                   <div className="text-sm text-gray-600">Annual Premium</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600">₹{result.monthly?.toLocaleString()}</div>
+                  <div className="text-2xl font-bold text-blue-600">₹{result.monthly?.toLocaleString('en-IN')}</div>
                   <div className="text-sm text-gray-600">Monthly Premium</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-600">₹{result.total?.toLocaleString()}</div>
+                  <div className="text-2xl font-bold text-purple-600">₹{result.total?.toLocaleString('en-IN')}</div>
                   <div className="text-sm text-gray-600">Total Premium</div>
                 </div>
               </div>

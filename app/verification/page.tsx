@@ -231,7 +231,7 @@ function VerificationContent() {
     if (income === 3000000) return "₹30,00,000 - ₹50,00,000"
     if (income === 5000000) return "₹50,00,000 - ₹1,00,00,000"
     if (income === 10000000) return "Above ₹1,00,00,000"
-    return `₹${income.toLocaleString()}`
+    return `₹${income.toLocaleString('en-IN')}`
   }
 
   if (loading) {

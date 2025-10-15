@@ -407,7 +407,7 @@ export default function ProfessionalInsuranceQuoteForm() {
                             <div className="text-right">
                               <p className="text-xs text-gray-500">Estimated Premium</p>
                               <p className="text-sm font-semibold text-green-600">
-                                ₹{estimatedPremium.toLocaleString()}/year
+                                ₹{estimatedPremium.toLocaleString('en-IN')}/year
                               </p>
                             </div>
                           )}
@@ -451,7 +451,7 @@ export default function ProfessionalInsuranceQuoteForm() {
                       </button>
                       {estimatedPremium && (
                         <p className="text-center text-sm text-gray-600 mt-3">
-                          Expected premium: ₹{estimatedPremium.toLocaleString()}/year • Get exact quotes now
+                          Expected premium: ₹{estimatedPremium.toLocaleString('en-IN')}/year • Get exact quotes now
                         </p>
                       )}
                     </div>
